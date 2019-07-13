@@ -16,12 +16,12 @@ namespace Convey.Configurations.Vault
         public static IConveyBuilder AddVault(this IConveyBuilder builder, string sectionName = SectionName)
         {
             var options = builder.GetOptions<VaultOptions>(sectionName);
+            builder.Services.AddSingleton(options);
             if (!options.Enabled || !builder.TryRegister(RegistryName))
             {
                 return builder;
             }
 
-            builder.Services.AddSingleton(options);
             builder.Services.AddTransient<IVaultStore, VaultStore>();
 
             return builder;
