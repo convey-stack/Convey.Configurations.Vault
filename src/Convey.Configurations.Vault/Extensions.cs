@@ -11,9 +11,6 @@ namespace Convey.Configurations.Vault
 {
     public static class Extensions
     {
-        private const string SectionName = "vault";
-        private const string RegistryName = "configurations.vault";
-
         public static IWebHostBuilder UseVault(this IWebHostBuilder builder, string key = null)
             => builder.ConfigureServices(services =>
                 {
@@ -42,10 +39,13 @@ namespace Convey.Configurations.Vault
                         enabled = vaultEnabled == "true" || vaultEnabled == "1";
                     }
 
-                    if (enabled)
+                    if (!enabled)
                     {
-                        cfg.AddVault(options, key);
+                        return;
                     }
+
+                    Console.WriteLine($"Loading settings from Vault: {options.Url}");
+                    cfg.AddVault(options, key);
                 });
 
         private static void AddVault(this IConfigurationBuilder builder, VaultOptions options, string key)
